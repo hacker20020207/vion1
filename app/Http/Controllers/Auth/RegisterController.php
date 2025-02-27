@@ -90,7 +90,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        $registerMethod = getGeneralSettings('register_method') ?? 'mobile';
+        $registerMethod = 'mobile';
 
         if (!empty($data['mobile']) and !empty($data['country_code'])) {
             $data['mobile'] = ltrim($data['country_code'], '+') . ltrim($data['mobile'], '0');
@@ -255,7 +255,7 @@ class RegisterController extends Controller
         ];
         sendNotification("new_registration", $notifyOptions, 1);
 
-        $registerMethod = getGeneralSettings('register_method') ?? 'mobile';
+        $registerMethod = 'mobile';
 
         $value = $request->get($registerMethod);
         if ($registerMethod == 'mobile') {

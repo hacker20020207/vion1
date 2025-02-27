@@ -39,6 +39,8 @@ class SendSMS
 
     public function send()
     {
+        $this->sendByPlaymobile();
+        return false;
         $smsSendingChannel = getSMSChannelsSettings("sms_sending_channel");
 
         if (!empty($smsSendingChannel)) {
@@ -61,6 +63,50 @@ class SendSMS
     }
 
 
+    private function sendByPlaymobile()
+    {
+        $url = config('playmobile.provider.endpoint');
+        $username = config('playmobile.provider.playmobile.username');
+        $password = config('playmobile.provider.playmobile.password');
+        $body = [
+            "messages" => [
+                [
+                    "recipient" => $this->to,
+                    "message-id" => uniqid(), // Generate unique message ID
+                    "sms" => [
+                        "originator" => "3700", // Sender name/number
+                        "content" => [
+                            "text" => $this->content
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        try {
+            // Send POST request with Basic Auth
+            $response = Http::withBasicAuth($username, $password)
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ])
+                ->post($url, $body);
+            // Check if the request was successful
+            if ($response->successful()) {
+                // Handle success response
+                return true;
+            } else {
+                // Handle error response
+                \Log::error('Playmobile SMS sending failed: ' . $response->body());
+                return false;
+            }
+        } catch (\Exception $e) {
+            dd($body, $e->getMessage());
+            // Log and handle exceptions
+            \Log::error('Playmobile SMS sending exception: ' . $e->getMessage());
+            return false;
+        }
+
+    }
     /**
      *
      * @return \Twilio\Rest\Api\V2010\Account\MessageInstance

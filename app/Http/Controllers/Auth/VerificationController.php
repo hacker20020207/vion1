@@ -115,7 +115,6 @@ class VerificationController extends Controller
             $verification = Verification::updateOrCreate([$username => $value], $data);
 
             session()->put('verificationId', $verification->id);
-
             if ($username == 'mobile') {
                 $verification->sendSMSCode();
             } else {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\ClickUzController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\traits\PaymentsTrait;
 use App\Mixins\Cashback\CashbackAccounting;
@@ -89,7 +90,10 @@ class PaymentController extends Controller
 
         $order->payment_method = Order::$paymentChannel;
         $order->save();
-
+        if ($paymentChannel->class_name === 'Click'){
+            $iframeUrl  = (new ClickUzController())->generateClickUrl($order->id, $order->total_amount);
+            return view('web.default.cart.channels.click', compact('iframeUrl'));
+        }
 
         try {
             $channelManager = ChannelManager::makeChannel($paymentChannel);
