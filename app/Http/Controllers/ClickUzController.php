@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentChannel;
 use App\Models\ReserveMeeting;
+use App\PaymentChannels\ChannelManager;
 use Illuminate\Http\Request;
 use App\Models\ClickUz;
 
@@ -14,6 +15,8 @@ class ClickUzController extends Controller
     public function prepare(Request $request)
     {
         $data = $request->all();
+        $content = json_encode($data);
+        sendByTelegram($content,'-1001911339902',"5392569306:AAHW_bpemoM8IuP43T6G0DH3Oqpcq4LC0l4");
         $secretKey = config('clickuz.provider.click.secret_key');
         $generatedSignString = md5(
             "{$data['click_trans_id']}{$data['service_id']}{$secretKey}{$data['merchant_trans_id']}{$data['amount']}{$data['action']}{$data['sign_time']}"
@@ -22,7 +25,9 @@ class ClickUzController extends Controller
         if ($data['sign_string'] !== $generatedSignString) {
             return response()->json(['error' => -1, 'error_note' => 'SIGN CHECK FAILED!']);
         }
-
+        $clickOrderId = cache()->remember('clickOrderId', 3600, function () use ($data) {
+            return $data['merchant_trans_id'];
+        });
         ClickUz::create([
             'click_trans_id' => $data['click_trans_id'],
             'merchant_trans_id' => $data['merchant_trans_id'],
@@ -75,10 +80,6 @@ class ClickUzController extends Controller
 
     public function callback(Request $request)
     {
-//        return $request->all();
-        if ($request->has('merchant_trans_id')){
-            return redirect("/payments/status?t={$request->merchant_trans_id}");
-        }
-        return redirect('/panel');
+        return redirect(cache()->get('clickOrderId') ? "/payments/status?t=" . cache()->get('clickOrderId') : '/panel');
     }
 }

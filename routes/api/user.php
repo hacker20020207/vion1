@@ -163,8 +163,8 @@ Route::group([], function () {
     Route::group(['prefix' => 'payments'], function () {
         Route::post('/request', 'PaymentsController@paymentRequest');
         Route::post('/credit', 'PaymentsController@paymentByCredit');
-        Route::get('/verify/{gateway}', ['as' => 'payment_verify', 'uses' => 'PaymentsController@paymentVerify']);
-        Route::post('/verify/{gateway}', ['as' => 'payment_verify_post', 'uses' => 'PaymentsController@paymentVerify']);
+        Route::get('/verify/{gateway}', ['as' => 'user_payment_verify', 'uses' => 'PaymentsController@paymentVerify']);
+        Route::post('/verify/{gateway}', ['as' => 'user_payment_verify_post', 'uses' => 'PaymentsController@paymentVerify']);
     });
     Route::group(['prefix' => 'profile-setting'], function () {
         Route::get('/', ['uses' => 'UsersController@setting']);
@@ -254,7 +254,7 @@ Route::group([], function () {
     Route::get('/sessions/{session}', ['uses' => 'SessionController@show'])->name('session.show');;
     Route::get('/text-lessons/{lesson}', ['uses' => 'TextLessonController@show'])->name('text_lesson.show');
     Route::get('/text-lessons/{lesson}/navigation', ['uses' => 'WebinarTextLessonController@index']);
-    Route::get('/assignments/{assignment}', ['uses' => 'WebinarAssignmentController@show'])->name('assignment.show');
+    Route::get('/assignments/{assignment}', ['uses' => 'WebinarAssignmentController@show'])->name('assignment.show2');
     Route::get('/quizzes/{quiz}', ['uses' => 'QuizzesController@show'])->name('quiz.show');
 //New Api
     //goToAgora Session

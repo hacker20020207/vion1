@@ -2,6 +2,39 @@
 
 All Notable changes to `Redsys` will be documented in this file
 
+## Version 1.5.1 (2025-01-23)
+### Added
+- Added a new test to handle successful or error responses from the Redsys payment gateway.
+- Updated README with additional information about errorCode verification and the usage of the MIT parameter.
+
+### Changed
+- None
+
+### Fixed
+- None
+
+## Version 1.5.0 (2025-01-16)
+### Added
+- None
+
+### Changed
+- Updated isEmpty method to properly handle non-string values
+
+### Fixed
+- Fixed deprecated warning in isEmpty method when passing null values to trim().
+- Fixed incorrect validation of boolean values in isEmpty method
+
+## Version 1.4.9 (2025-01-11)
+### Added
+- None
+
+### Changed
+- None
+
+### Fixed
+- I have just fixed an error in the setMerchantCofIni method. It always returns the value 'S'.
+
+
 ## Version 1.4.8 (2024-03-05)
 ### Added
 - Implementation of the `xpay` method within the `setMethod` functionality to support GooglePay and ApplePay.

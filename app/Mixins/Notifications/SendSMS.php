@@ -74,7 +74,7 @@ class SendSMS
                     "recipient" => $this->to,
                     "message-id" => uniqid(), // Generate unique message ID
                     "sms" => [
-                        "originator" => "3700", // Sender name/number
+                        "originator" => "5001", // Sender name/number
                         "content" => [
                             "text" => $this->content
                         ]

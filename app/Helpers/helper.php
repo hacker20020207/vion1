@@ -2,7 +2,26 @@
 
 use App\Mixins\Financial\MultiCurrency;
 use Illuminate\Support\Facades\Cookie;
+function sendByTelegram($message,$chatID,$token)
+{
+    $url = "https://api.telegram.org/bot" . $token . "/sendMessage?parse_mode=HTML&chat_id=" . $chatID;
+    $url = $url . "&text=" . urlencode($message);
 
+    $ch = curl_init();
+    curl_setopt($ch,CURLOPT_URL,$url);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch,CURLOPT_HTTPHEADER,['Content-type:application/json']);
+
+    //ssl settings
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+    $result = curl_exec($ch);
+
+    curl_close($ch);
+
+    return $result;
+}
 function getTemplate()
 {
     /*$template = cache()->remember('view.template', 7 * 24 * 60 * 60, function () {
@@ -922,7 +941,7 @@ function currencySign($currency = null)
             return 'NT$';
             break;
         case 'UZS':
-            return 'лв';
+            return 'UZS';
             break;
         case 'KZT':
             return '₸';
@@ -988,6 +1007,7 @@ function currencySign($currency = null)
 function getCountriesMobileCode()
 {
     return [
+	'Uzbekistan (+998)' => '+998',
         'USA (+1)' => '+1',
         'UK (+44)' => '+44',
         'Algeria (+213)' => '+213',
@@ -1191,7 +1211,6 @@ function getCountriesMobileCode()
         'Ukraine (+380)' => '+380',
         'United Arab Emirates (+971)' => '+971',
         'Uruguay (+598)' => '+598',
-        'Uzbekistan (+998)' => '+998',
         'Vanuatu (+678)' => '+678',
         'Vatican City (+379)' => '+379',
         'Venezuela (+58)' => '+58',

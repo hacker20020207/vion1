@@ -1,11 +1,77 @@
 <?php
+declare(strict_types=1);
 
 namespace Sermepa\Tpv;
 
+use ReflectionClass;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 class TpvTest extends PHPUnitTestCase
 {
+
+    private $isEmptyMethod;
+    private $redsys;
+
+    protected function setUp(): void
+    {
+        $this->redsys = new Tpv();
+        $reflection = new ReflectionClass(Tpv::class);
+        $this->isEmptyMethod = $reflection->getMethod('isEmpty');
+        $this->isEmptyMethod->setAccessible(true);
+    }
+
+    /**
+     * Data provider for the isEmpty method
+     *
+     * @return array Array of empty values
+     */
+    public function emptyValuesProvider()
+    {
+        return [
+            'null value' => [null],
+            'empty string' => [''],
+            'whitespace string' => ['   '],
+            'tabs' => ["\t\t"],
+            'newlines' => ["\n\r"],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider emptyValuesProvider
+     */
+    public function isEmpty_should_handle_empty_values($value)
+    {
+        $result = $this->isEmptyMethod->invoke($this->redsys, $value);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Data provider for the isEmpty method
+     *
+     * @return array Array of empty values
+     */
+    public function nonEmptyValuesProvider()
+    {
+        return [
+            'boolean true' => [true],
+            'boolean false' => [false],
+            'empty array' => [[]],
+            'zero as string' => ['0'],
+            'zero as integer' => [0],
+            'normal string' => ['test'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider nonEmptyValuesProvider
+     */
+    public function isEmpty_returns_false_for_non_empty_values($value)
+    {
+        $result = $this->isEmptyMethod->invoke($this->redsys, $value);
+        $this->assertFalse($result);
+    }
 
     /** @test */
     public function identifier_by_default_required()
@@ -629,5 +695,50 @@ class TpvTest extends PHPUnitTestCase
         $this->expectException(\Sermepa\Tpv\TpvException::class);
         $redsys = new Tpv();
         $redsys->getJsPath($environment, $version);
+    }
+
+    public function cofIniProvider()
+    {
+        return [
+            ['S'],
+            ['N'],
+        ];
+    }
+
+    /**
+     *
+     * @dataProvider cofIniProvider
+     */
+    public function test_should_validate_a_merchant_cof_ini($cofIni)
+    {
+        $redsys = new Tpv();
+        $redsys->setMerchantCofIni($cofIni);
+        $parameters = $redsys->getParameters();
+        $this->assertArrayHasKey('DS_MERCHANT_COF_INI', $parameters);
+        $this->assertContains($parameters['DS_MERCHANT_COF_INI'], [$cofIni]);
+    }
+
+    public function invalidSetMerchantCofIni()
+    {
+        return [
+            [''],
+            ['B'],
+            ['-1'],
+            ['G'],
+            [0],
+            ['Del']
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider invalidSetMerchantCofIni
+     */
+    public function throw_when_set_method_merchnant_cof_ini_is_invalid($cofIni)
+    {
+        $this->expectExceptionMessage("Set Merchant COF INI valid options");
+        $this->expectException(\Sermepa\Tpv\TpvException::class);
+        $redsys = new Tpv();
+        $redsys->setMerchantCofIni($cofIni);
     }
 }
