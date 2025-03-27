@@ -35,5 +35,4 @@ Route::group(['prefix' => '/development'], function () {
     Route::post('/clickuz/paymentOrder', [App\Http\Controllers\Web\PaymentController::class, 'paymentOrder'])->name('clickuz.paymentOrder');
     Route::post('/clickuz/prepare', [App\Http\Controllers\ClickUzController::class, 'prepare']);
     Route::post('/clickuz/complete', [App\Http\Controllers\ClickUzController::class, 'complete']);
-    Route::get('/clickuz/callback', [App\Http\Controllers\ClickUzController::class, 'callback'])->name('clickuz.callback');
 });

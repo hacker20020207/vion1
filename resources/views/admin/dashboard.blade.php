@@ -95,20 +95,20 @@
                         <div class="card card-statistic-2">
                             <div class="card-stats">
                                 <div class="card-stats-title">{{trans('admin/main.income_statistics')}}</div>
-
+                                
                                 <div class="card-stats-items">
                                     <div class="card-stats-item">
-                                        <div class="card-stats-item-count">{{ handlePrice($getIncomeStatistics['todaySales']) }}</div>
+                                        <div class="card-stats-item-count">{{  get_on_new_st(handlePrice($getIncomeStatistics['todaySales'])) }}</div>
                                         <div class="card-stats-item-label">{{trans('admin/main.today')}}</div>
                                     </div>
 
                                     <div class="card-stats-item">
-                                        <div class="card-stats-item-count">{{ handlePrice($getIncomeStatistics['monthSales']) }}</div>
+                                        <div class="card-stats-item-count">{{  get_on_new_st(handlePrice($getIncomeStatistics['monthSales'])) }}</div>
                                         <div class="card-stats-item-label">{{trans('admin/main.this_month')}}</div>
                                     </div>
 
                                     <div class="card-stats-item">
-                                        <div class="card-stats-item-count">{{ handlePrice($getIncomeStatistics['yearSales']) }}</div>
+                                        <div class="card-stats-item-count">{{  get_on_new_st(handlePrice($getIncomeStatistics['yearSales'])) }}</div>
                                         <div class="card-stats-item-label">{{trans('admin/main.this_year')}}</div>
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
                                     <h4>{{trans('admin/main.total_incomes')}}</h4>
                                 </div>
                                 <div class="card-body">
-                                    {{ handlePrice($getIncomeStatistics['totalSales']) }}
+                                    {{ get_split_st(handlePrice($getIncomeStatistics['totalSales'])) }}
                                 </div>
                             </div>
                         </div>

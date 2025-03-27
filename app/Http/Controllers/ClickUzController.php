@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Web\PaymentController;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentChannel;
@@ -15,8 +16,6 @@ class ClickUzController extends Controller
     public function prepare(Request $request)
     {
         $data = $request->all();
-        $content = json_encode($data);
-        sendByTelegram($content,'-1001911339902',"5392569306:AAHW_bpemoM8IuP43T6G0DH3Oqpcq4LC0l4");
         $secretKey = config('clickuz.provider.click.secret_key');
         $generatedSignString = md5(
             "{$data['click_trans_id']}{$data['service_id']}{$secretKey}{$data['merchant_trans_id']}{$data['amount']}{$data['action']}{$data['sign_time']}"
@@ -25,16 +24,21 @@ class ClickUzController extends Controller
         if ($data['sign_string'] !== $generatedSignString) {
             return response()->json(['error' => -1, 'error_note' => 'SIGN CHECK FAILED!']);
         }
+        if (cache()->has('clickOrderId')) {
+            cache()->forget('clickOrderId'); // Eski qiymatni o‘chirib tashlash
+        }
         $clickOrderId = cache()->remember('clickOrderId', 3600, function () use ($data) {
             return $data['merchant_trans_id'];
         });
         ClickUz::create([
             'click_trans_id' => $data['click_trans_id'],
+            'payment_id'    => $data['click_paydoc_id'],
             'merchant_trans_id' => $data['merchant_trans_id'],
             'amount' => $data['amount'],
             'sign_time' => $data['sign_time'],
             'situation' => $data['error']
         ]);
+        Order::where('id', $data['merchant_trans_id'])->update(['status' => 'paying']);
 
         return response()->json([
             'click_trans_id' => $data['click_trans_id'],
@@ -60,7 +64,8 @@ class ClickUzController extends Controller
             'situation' => $data['error']==0 ? 1 : -9,
             'status' => $data['error']==0 ? 'success' : 'Transaction cancelled'
         ]);
-        Order::where('id', $data['merchant_trans_id'])->update(['status' => 'paid']);
+        $paymentController = (new PaymentController())->callback($data['merchant_trans_id']);
+//        Order::where('id', $data['merchant_trans_id'])->update(['status' => 'paid']);
         return response()->json([
             'click_trans_id' => $data['click_trans_id'],
             'merchant_trans_id' => $data['merchant_trans_id'],
@@ -80,6 +85,21 @@ class ClickUzController extends Controller
 
     public function callback(Request $request)
     {
-        return redirect(cache()->get('clickOrderId') ? "/payments/status?t=" . cache()->get('clickOrderId') : '/panel');
+        if ($request->has('payment_id')){
+            $order_id = ClickUz::where('payment_id', $request->get('payment_id'))->first()->merchant_trans_id;
+        }
+        if ($order_id){
+            $order = Order::find($order_id);
+            if (!empty($order)) {
+                $data = [
+                    'pageTitle' => trans('public.cart_page_title'),
+                    'order' => $order,
+                ];
+
+                return view('web.default.cart.status_pay', $data);
+            }
+        }
+        return redirect('/panel');
+//        return (new PaymentController())->callback(cache()->get('clickOrderId'));
     }
 }

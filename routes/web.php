@@ -19,6 +19,8 @@ Route::group(['prefix' => 'my_api', 'namespace' => 'Api\Panel', 'middleware' => 
     Route::get('/registration_packages/{user}/{package}', 'RegistrationPackagesController@webPayRender')->name('registration_packages');
     Route::get('/courses/learning_file/{user}', 'CoursesLearningContent@renderWebUrl')->name('courses_learning_file');
 });
+Route::get('/clickuz/callback', [App\Http\Controllers\ClickUzController::class, 'callback'])->name('clickuz.callback');
+
 
 Route::group(['prefix' => 'api_sessions'], function () {
     Route::get('/{session_id}/big_blue_button', ['uses' => 'Api\Panel\SessionController@BigBlueButton'])->name('big_blue_button');

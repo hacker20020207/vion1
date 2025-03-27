@@ -140,6 +140,21 @@ class PaymentController extends Controller
     }
 
 
+    public function callback($id)
+    {
+        try {
+            $order = Order::where('id', $id)->first();
+
+            return $this->paymentOrderAfterVerify($order);
+        } catch (\Exception $exception) {
+            $toastData = [
+                'title' => trans('cart.fail_purchase'),
+                'msg' => trans('cart.gateway_error'),
+                'status' => 'error'
+            ];
+            return redirect('cart')->with(['toast' => $toastData]);
+        }
+    }
     private function paymentOrderAfterVerify($order)
     {
         if (!empty($order)) {
