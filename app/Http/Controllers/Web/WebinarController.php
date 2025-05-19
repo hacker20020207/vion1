@@ -37,8 +37,13 @@ class WebinarController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
         }
-
-
+        date_default_timezone_set('Asia/Tashkent');
+        $tashkent_time = date('Y-m-d H:i:s');
+        if($user){
+            $watermark_text = $user->email.' '. $user->full_name.' '.$tashkent_time;
+        }else{
+            $watermark_text = $tashkent_time;
+        }
         if (!$justReturnData) {
             $contentLimitation = $this->checkContentLimitation($user, true);
             if ($contentLimitation != "ok") {
@@ -160,7 +165,6 @@ class WebinarController extends Controller
             ])
             //->where('status', 'active')
             ->first();
-
         if (empty($course)) {
             return $justReturnData ? false : back();
         }
@@ -325,6 +329,7 @@ class WebinarController extends Controller
             'installments' => $installments ?? null,
             'cashbackRules' => $cashbackRules ?? null,
             'instructorDiscounts' => $instructorDiscounts,
+            'watermark_text' => $watermark_text
         ];
 
         // check for certificate

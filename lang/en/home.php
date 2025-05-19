@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Home 
+    | Home
     |--------------------------------------------------------------------------
     */
 
@@ -84,4 +84,5 @@ return [
     'platform_address' => 'Address',
     'order_summary' => 'Order Summary',
   	'blog_search_placeholder' => 'Search for blog posts...',
+    'This button is locked' => 'This button is locked',
 ];

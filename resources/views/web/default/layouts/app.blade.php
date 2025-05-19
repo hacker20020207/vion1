@@ -16,8 +16,9 @@
     <link rel="stylesheet" href="/assets/default/vendors/toast/jquery.toast.min.css">
     <link rel="stylesheet" href="/assets/default/vendors/simplebar/simplebar.css">
     <link rel="stylesheet" href="/assets/default/css/app.css">
+    <link rel="stylesheet" href="/assets/default/css/main.css">
 
-    @if($isRtl)
+@if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
 
@@ -30,6 +31,7 @@
         {!! getThemeFontsSettings() !!}
 
         {!! getThemeColorsSettings() !!}
+
     </style>
 
 
@@ -77,7 +79,37 @@
 @if(empty($justMobileApp) and checkShowCookieSecurityDialog())
     @include('web.default.includes.cookie-security')
 @endif
+<script>
+    let this_button_locked = '{{__('home.This button is locked')}}'
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        $.toast({text:this_button_locked});
+    });
 
+    document.addEventListener('keyup', function(e) {
+        if (e.code === "PrintScreen") {
+            e.preventDefault();
+            $.toast({text:this_button_locked});
+        }
+    });
+    document.addEventListener('keydown', function(e) {
+        // F12 (Developer Tools)
+        if (e.key === "F12") {
+            e.preventDefault();
+            $.toast({text:this_button_locked});
+        }
+
+        // Ctrl+U (view source), Ctrl+S (save), Ctrl+Shift+I (inspect)
+        if ((e.ctrlKey && e.code === 'KeyU') ||
+            (e.ctrlKey && e.code === 'KeyS') ||
+            (e.ctrlKey && e.shiftKey && e.code === 'KeyI') ||
+            (e.ctrlKey && e.shiftKey && e.code === 'KeyJ')) {
+            e.preventDefault();
+            $.toast({text: this_button_locked});
+        }
+
+    });
+</script>
 
 <script>
     var deleteAlertTitle = '{{ trans('public.are_you_sure') }}';

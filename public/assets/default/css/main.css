@@ -1,0 +1,28 @@
+/* Katta ekranlar uchun (desktop) */
+@media screen and (min-width: 992px) {
+    .video-watermark-overlay {
+        font-size: 24px;
+        top: 74px;
+        left: 10px;
+    }
+}
+
+/* Kichik ekranlar uchun (mobil) */
+@media screen and (max-width: 991px) {
+    .video-watermark-overlay {
+        font-size: 16px;
+        top: 20px;
+        left: 10px;
+    }
+}
+.video-watermark-overlay{
+    color:rgba(255, 255, 255, 0.4);
+    text-shadow:1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+body {
+    -webkit-user-select: none; /* Chrome, Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE10+/Edge */
+    user-select: none;         /* Standart */
+}

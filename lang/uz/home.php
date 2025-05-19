@@ -1,7 +1,7 @@
 <?php return array (
   'home_title' => 'Uy',
   'slider_heading' => 'Onlayn o\'rganishdan zavqlaning',
-  'slider_hint' => 'Onlayn ta\'lim - bu o\'sishning eng yaxshi tanlovlaridan biridir 
+  'slider_hint' => 'Onlayn ta\'lim - bu o\'sishning eng yaxshi tanlovlaridan biridir
  Dunyo bo\'ylab eng yaxshi o\'qituvchilardan o\'rganing',
   'slider_search_placeholder' => 'Qidiruv kurslari, o\'qituvchilar va tashkilotlar ...',
   'find' => 'Qidirish',
@@ -54,4 +54,5 @@
   'platform_address' => 'Manzil',
   'order_summary' => 'Buyurtma xulosasi',
   'blog_search_placeholder' => 'Blog postlarini qidirish ...',
+  'This button is locked' => 'Bu tugma qulflangan',
 );
