@@ -4,8 +4,6 @@
     <link rel="stylesheet" href="/assets/default/css/css-stars.css">
     <link rel="stylesheet" href="/assets/default/vendors/video/video-js.min.css">
 @endpush
-
-
 @section('content')
     <section class="course-cover-container {{ empty($activeSpecialOffer) ? 'not-active-special-offer' : '' }}">
         <img src="{{ $course->getImageCover() }}" class="img-cover course-cover-img" alt="{{ $course->title }}"/>
@@ -136,6 +134,7 @@
                             <div id="webinarDemoVideoBtn"
                                  data-video-path="{{ $course->video_demo_source == 'upload' ?  url($course->video_demo) : $course->video_demo }}"
                                  data-video-source="{{ $course->video_demo_source }}"
+                                 data-video-watermark="{{$watermark_text}}"
                                  class="course-video-icon cursor-pointer d-flex align-items-center justify-content-center">
                                 <i data-feather="play" width="25" height="25"></i>
                             </div>

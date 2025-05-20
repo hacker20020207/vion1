@@ -20,7 +20,7 @@ class GroupController extends Controller
         $filters = $request->input('filters');
 
         if (isset($filters['group_name'])) {
-            $groups = $groups->where('name', 'like', '%' . $filters['group_name'] . '%');
+            $groups = $groups->with('groupUsers')->where('name', 'like', '%' . $filters['group_name'] . '%');
         }
 
         $data = [

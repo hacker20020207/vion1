@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/assets/default/vendors/simplebar/simplebar.css">
     <link rel="stylesheet" href="/assets/default/css/app.css">
     <link rel="stylesheet" href="/assets/default/css/panel.css">
-
+    <link rel="stylesheet" href="/assets/default/css/main.css">
     @if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
@@ -94,7 +94,10 @@
     var copyLang = '{{ trans('public.copy') }}';
     var doneLang = '{{ trans('public.done') }}';
 </script>
-
+<script>
+    let this_button_locked = '{{__('home.This button is locked')}}'
+</script>
+<script src="/assets/default/js/button_lock.js"></script>
 @if(session()->has('toast'))
     <script>
         (function () {
