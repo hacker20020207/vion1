@@ -26,6 +26,7 @@
      data-type="{{ $type }}"
      data-id="{{ $item->id }}"
      data-description="{!! $description !!}"
+     data-video-watermark="{{$watermark_text}}"
      data-passed-error="{{ !empty($checkSequenceContent['all_passed_items_error']) ? $checkSequenceContent['all_passed_items_error'] : '' }}"
      data-access-days-error="{{ !empty($checkSequenceContent['access_after_day_error']) ? $checkSequenceContent['access_after_day_error'] : '' }}"
 >
