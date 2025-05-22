@@ -64,6 +64,3 @@
         </div>
     </div>
 </div>
-<script>
-    let name = '{{$dictionary}}'
-</script>
