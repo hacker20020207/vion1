@@ -19,11 +19,13 @@
 
     $itemPersonalNote = $item->personalNote()->where('user_id', $authUser->id)->first();
     $hasPersonalNote = (!empty($itemPersonalNote) and !empty($itemPersonalNote->note));
+    $description = !empty($item->description) ? $item->description : (!empty($item->summary) ? $item->summary : '');
 @endphp
 
 <div class=" d-flex align-items-start p-10 cursor-pointer {{ (!empty($checkSequenceContent) and $sequenceContentHasError) ? 'js-sequence-content-error-modal' : 'tab-item' }}"
      data-type="{{ $type }}"
      data-id="{{ $item->id }}"
+     data-description="{!! $description !!}"
      data-passed-error="{{ !empty($checkSequenceContent['all_passed_items_error']) ? $checkSequenceContent['all_passed_items_error'] : '' }}"
      data-access-days-error="{{ !empty($checkSequenceContent['access_after_day_error']) ? $checkSequenceContent['access_after_day_error'] : '' }}"
 >
@@ -49,10 +51,6 @@
 
         <div class="tab-item-info mt-15">
             <p class="font-12 text-gray d-block">
-                @php
-                    $description = !empty($item->description) ? $item->description : (!empty($item->summary) ? $item->summary : '');
-                @endphp
-
                 {!! truncate($description, 150) !!}
             </p>
 
@@ -66,3 +64,6 @@
         </div>
     </div>
 </div>
+<script>
+    let name = '{{$dictionary}}'
+</script>

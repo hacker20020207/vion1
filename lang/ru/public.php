@@ -337,4 +337,5 @@
   'topic_post' => 'Тематический пост',
   'forbidden_request_toast_lang' => '«Запретный» запрос',
   'forbidden_request_toast_msg_lang' => 'Вы не получаете доступ к этому контенту.',
+  'lessons' => 'Уроки',
 );

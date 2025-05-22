@@ -337,4 +337,5 @@
   'topic_post' => 'Mavzu posti',
   'forbidden_request_toast_lang' => '"Taqiqlangan" so\'rov',
   'forbidden_request_toast_msg_lang' => 'Siz ushbu tarkibga kira olmaysiz.',
+  'lessons' => 'Darslar',
 );
