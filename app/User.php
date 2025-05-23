@@ -114,7 +114,7 @@ class User extends Authenticatable
     public function hasPermission($section_name)
     {
         if (!isset($this->permissions)) {
-            $this->permissions_cache = Cache::remember("user_permissions_{$this->id}", 3600, function () {
+            $this->permissions_cache = Cache::remember("user_permissions_{$this->id}", 60, function () {
                 $sections_id = Permission::where('role_id', $this->role_id)
                     ->where('allow', true)
                     ->pluck('section_id');
