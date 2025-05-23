@@ -29,6 +29,7 @@ use App\Models\Webinar;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable
 {
@@ -63,6 +64,7 @@ class User extends Authenticatable
         'level_of_training' => 'integer',
     ];
     private $permissions;
+    private $permissions_cache;
     private $user_group;
     private $userInfo;
 
@@ -112,11 +114,15 @@ class User extends Authenticatable
     public function hasPermission($section_name)
     {
         if (!isset($this->permissions)) {
-            $sections_id = Permission::where('role_id', '=', $this->role_id)->where('allow', true)->pluck('section_id')->toArray();
-            $this->permissions = Section::whereIn('id', $sections_id)->pluck('name')->toArray();
+            $this->permissions_cache = Cache::remember("user_permissions_{$this->id}", 3600, function () {
+                $sections_id = Permission::where('role_id', $this->role_id)
+                    ->where('allow', true)
+                    ->pluck('section_id');
+                return Section::whereIn('id', $sections_id)->pluck('name')->toArray();
+            });
         }
 
-        return in_array($section_name, $this->permissions);
+        return in_array($section_name, $this->permissions_cache);
     }
 
     public function role()

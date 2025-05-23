@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Api\CourseForumAnswer;
+use App\Models\Permission;
 use App\Models\Webinar;
 use App\Models\CourseForum;
 use App\Models\Section;
@@ -21,7 +22,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+//         'App\Model' => 'App\Policies\ModelPolicy',
         CourseForum::class => CourseForumPolicy::class,
         CourseForumAnswer::class => CourseForumAnswerPolicy::class ,
         Webinar::class => WebinarPolicy::class
@@ -39,10 +40,11 @@ class AuthServiceProvider extends ServiceProvider
 
         $minutes = 60 * 60; // 1 hour
         $sections = Cache::remember('sections', $minutes, function () {
-            return Section::all();
+            return Section::get();
         });
 
         $scopes = [];
+
         foreach ($sections as $section) {
             $scopes[$section->name] = $section->caption;
             Gate::define($section->name, function ($user) use ($section) {
