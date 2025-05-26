@@ -112,7 +112,6 @@
             <div class="col-12 col-md-6">
                 <div class="form-group">
                     <label class="input-label">{{ trans('webinars.system') }}</label>
-
                     <select name="ajax[new][session_api]" class="js-ajax-session_api form-control">
                         @foreach(getFeaturesSettings("available_session_apis") as $sessionApi)
                             <option value="{{ $sessionApi }}">{{ trans('update.session_api_'.$sessionApi) }}</option>

@@ -77,7 +77,6 @@
                         <div class="webinar-card webinar-list d-flex">
                             <div class="image-box">
                                 <img src="{{ $webinar->getImage() }}" class="img-cover" alt="">
-
                                 <div class="badges-lists">
                                     @if(!empty($webinar->deleteRequest) and $webinar->deleteRequest->status == "pending")
                                         <span class="badge badge-danger">{{ trans('update.removal_request_sent') }}</span>
@@ -130,10 +129,14 @@
                                                 <i data-feather="more-vertical" height="20"></i>
                                             </button>
                                             <div class="dropdown-menu ">
+
+                                                @if($webinar->isCourse())
+                                                    <button type="button" data-webinar-id="{{ $webinar->id }}" class="js-webinar-next-lesson webinar-actions btn-transparent d-block">{{ trans('public.create_lesson') }}</button>
+                                                @endif
+
                                                 @if(!empty($webinar->start_date))
                                                     <button type="button" data-webinar-id="{{ $webinar->id }}" class="js-webinar-next-session webinar-actions btn-transparent d-block">{{ trans('public.create_join_link') }}</button>
                                                 @endif
-
 
                                                 @can('panel_webinars_learning_page')
                                                     <a href="{{ $webinar->getLearningPageUrl() }}" target="_blank" class="webinar-actions d-block mt-10">{{ trans('update.learning_page') }}</a>
@@ -147,6 +150,8 @@
                                                     @can('panel_webinars_create')
                                                         <a href="/panel/webinars/{{ $webinar->id }}/step/4" class="webinar-actions d-block mt-10">{{ trans('public.sessions') }}</a>
                                                     @endcan
+                                                @else
+                                                    <a href="/panel/webinars/{{ $webinar->id }}/step/4" class="webinar-actions d-block mt-10">{{ trans('public.sessions') }}</a>
                                                 @endif
 
                                                 @can('panel_webinars_create')
