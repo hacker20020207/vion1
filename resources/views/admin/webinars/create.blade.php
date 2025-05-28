@@ -30,7 +30,6 @@
             border: 1px solid red;
         }
         .btn-success, .btn-danger{
-            display: flex;
             margin-left: 2px;
             align-items: center;
             padding: 0.5rem 1rem;
