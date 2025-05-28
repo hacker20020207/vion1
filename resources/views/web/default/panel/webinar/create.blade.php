@@ -1,7 +1,44 @@
 @extends(getTemplate() .'.panel.layouts.panel_layout')
 
 @push('styles_top')
-
+    <link href="{{asset('assets/libs/spectrum-colorpicker2/spectrum.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/clockpicker/bootstrap-clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+        span.input-group-text, .clockpicker-tick, .clockpicker-button {
+            background-color: lightblue !important;
+        }
+        .clockpicker-popover .popover-content{
+            box-shadow: 2px 14px 14px;
+        }
+        .btn-success{
+            background-color: forestgreen !important;
+            border: 1px solid forestgreen;
+        }
+        .btn-danger{
+            background-color: red !important;
+            border: 1px solid red;
+        }
+        .btn-success, .btn-danger{
+            display: flex;
+            margin-left: 2px;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0;
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.25;
+            text-align: center;
+            white-space: nowrap;
+            border-radius: 0.5rem;
+        }
+        .opacity_content label, .opacity_content input, .opacity_content select, .opacity_content .input-group-text{
+            opacity:0.4 !important;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -57,6 +94,16 @@
 @endsection
 
 @push('scripts_bottom')
+    <script src="{{asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+    <script src="{{asset('assets/libs/spectrum-colorpicker2/spectrum.min.js')}}"></script>
+    <script src="{{asset('assets/libs/clockpicker/bootstrap-clockpicker.min.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+    <!-- Init js-->
+    <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+    <!-- App js -->
+    <script src="{{asset('assets/js/time_content.js')}}"></script>
+
     <script>
         var saveSuccessLang = '{{ trans('webinars.success_store') }}';
         var zoomJwtTokenInvalid = '{{ trans('webinars.zoom_jwt_token_invalid') }}';

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants;
 use App\Exports\WebinarsExport;
 use App\Http\Controllers\Admin\traits\ProductBadgeTrait;
 use App\Http\Controllers\Admin\traits\WebinarChangeCreator;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Panel\WebinarStatisticController;
 use App\Mail\SendNotifications;
 use App\Models\BundleWebinar;
 use App\Models\Category;
+use App\Models\DaysOfWeek;
 use App\Models\File;
 use App\Models\Gift;
 use App\Models\Group;
@@ -32,6 +34,7 @@ use App\Models\WebinarChapter;
 use App\Models\WebinarChapterItem;
 use App\Models\WebinarFilterOption;
 use App\Models\WebinarPartnerTeacher;
+use App\Models\WebinarScheduleTemplates;
 use App\User;
 use App\Models\Webinar;
 use Illuminate\Http\Request;
@@ -418,6 +421,52 @@ class WebinarController extends Controller
             'updated_at' => time(),
         ]);
 
+        $mondayDate = $request->mondayDate;
+        $monday_confirmed = $request->monday_confirmed;
+        $thuesdayDate = $request->thuesdayDate;
+        $thuesday_confirmed = $request->thuesday_confirmed;
+        $wednesdayDate = $request->wednesdayDate;
+        $wednesday_confirmed = $request->wednesday_confirmed;
+        $thursdayDate = $request->thursdayDate;
+        $thursday_confirmed = $request->thursday_confirmed;
+        $fridayDate = $request->fridayDate;
+        $friday_confirmed = $request->friday_confirmed;
+        $saturdayDate = $request->saturdayDate;
+        $saturday_confirmed = $request->saturday_confirmed;
+        $sundayDate = $request->sundayDate;
+        $sunday_confirmed = $request->sunday_confirmed;
+
+        $daysOfWeek = DaysOfWeek::get();
+        $monday = $daysOfWeek->firstWhere('name', 'Monday');
+        $thuesday = $daysOfWeek->firstWhere('name', 'Thuesday');
+        $wednesday = $daysOfWeek->firstWhere('name', 'Wednesday');
+        $thursday = $daysOfWeek->firstWhere('name', 'Thursday');
+        $friday = $daysOfWeek->firstWhere('name', 'Friday');
+        $saturday = $daysOfWeek->firstWhere('name', 'Saturday');
+        $sunday = $daysOfWeek->firstWhere('name', 'Sunday');
+
+        if($monday_confirmed == 1 && $monday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $monday->id, $mondayDate);
+        }
+        if($thuesday_confirmed == 1 && $thuesday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $thuesday->id, $thuesdayDate);
+        }
+        if($wednesday_confirmed == 1 && $wednesday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $wednesday->id, $wednesdayDate);
+        }
+        if($thursday_confirmed == 1 && $thursday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $thursday->id, $thursdayDate);
+        }
+        if($friday_confirmed == 1 && $friday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $friday->id, $fridayDate);
+        }
+        if($saturday_confirmed == 1 && $saturday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $saturday->id, $saturdayDate);
+        }
+        if($sunday_confirmed == 1 && $sunday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $sunday->id, $sundayDate);
+        }
+
         if ($webinar) {
             WebinarTranslation::updateOrCreate([
                 'webinar_id' => $webinar->id,
@@ -465,6 +514,18 @@ class WebinarController extends Controller
 
 
         return redirect(getAdminPanelUrl() . '/webinars/' . $webinar->id . '/edit?locale=' . $data['locale']);
+    }
+
+    public function saveNewWebinarScheduleTemplate($webinar_id, $week_id, $time){
+        $webinar_schedule_template = WebinarScheduleTemplates::where(['webinar_id'=> $webinar_id, 'day_of_week_id'=>$week_id])->first();
+        if(!$webinar_schedule_template){
+            $webinar_schedule_template = new WebinarScheduleTemplates();
+        }
+        $webinar_schedule_template->webinar_id = $webinar_id;
+        $webinar_schedule_template->day_of_week_id = $week_id;
+        $webinar_schedule_template->status = Constants::WEBINAR_SCHEDULE_TEMPLATE_ACTIVE;
+        $webinar_schedule_template->start_time = $time;
+        $webinar_schedule_template->save();
     }
 
     public function edit(Request $request, $id)

@@ -1,5 +1,3 @@
-
-{{--@dd($webinar->scheduleTemplates)--}}
 <div id="time_content" class="d-none">
     <div id="monday_content" class="opacity_content">
         <div class="form-group mt-15">

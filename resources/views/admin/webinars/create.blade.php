@@ -8,7 +8,43 @@
     <link rel="stylesheet" href="/assets/default/vendors/bootstrap-tagsinput/bootstrap-tagsinput.min.css">
     <link rel="stylesheet" href="/assets/vendors/summernote/summernote-bs4.min.css">
     <link href="/assets/default/vendors/sortable/jquery-ui.min.css"/>
+    <link href="{{asset('assets/libs/spectrum-colorpicker2/spectrum.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{asset('assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/clockpicker/bootstrap-clockpicker.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
     <style>
+        span.input-group-text, .clockpicker-tick, .clockpicker-button {
+            background-color: lightblue !important;
+        }
+        .clockpicker-popover .popover-content{
+            box-shadow: 2px 14px 14px;
+        }
+        .btn-success{
+            background-color: forestgreen !important;
+            border: 1px solid forestgreen;
+        }
+        .btn-danger{
+            background-color: red !important;
+            border: 1px solid red;
+        }
+        .btn-success, .btn-danger{
+            display: flex;
+            margin-left: 2px;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0;
+            font-size: 0.75rem;
+            font-weight: 400;
+            line-height: 1.25;
+            text-align: center;
+            white-space: nowrap;
+            border-radius: 0.5rem;
+        }
+        .opacity_content label, .opacity_content input, .opacity_content select, .opacity_content .input-group-text{
+            opacity:0.4 !important;
+        }
         .bootstrap-timepicker-widget table td input {
             width: 35px !important;
         }
@@ -39,7 +75,6 @@
                 <div class="col-12 ">
                     <div class="card">
                         <div class="card-body">
-
                             <form method="post" action="{{ getAdminPanelUrl() }}/webinars/{{ !empty($webinar) ? $webinar->id.'/update' : 'store' }}" id="webinarForm" class="webinar-form" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <section>
@@ -47,7 +82,6 @@
 
                                     <div class="row">
                                         <div class="col-12 col-md-5">
-
                                             @if(!empty(getGeneralSettings('content_translate')))
                                                 <div class="form-group">
                                                     <label class="input-label">{{ trans('auth.language') }}</label>
@@ -68,20 +102,18 @@
 
                                             <div class="form-group mt-15 ">
                                                 <label class="input-label d-block">{{ trans('panel.course_type') }}</label>
-
-                                                <select name="type" class="custom-select @error('type')  is-invalid @enderror">
+                                                <select name="type" class="custom-select @error('type') is-invalid @enderror" onchange="courseTypeFunc(this)">
                                                     <option value="webinar" @if((!empty($webinar) and $webinar->isWebinar()) or old('type') == \App\Models\Webinar::$webinar) selected @endif>{{ trans('webinars.webinar') }}</option>
                                                     <option value="course" @if((!empty($webinar) and $webinar->isCourse()) or old('type') == \App\Models\Webinar::$course) selected @endif>{{ trans('product.video_course') }}</option>
                                                     <option value="text_lesson" @if((!empty($webinar) and $webinar->isTextCourse()) or old('type') == \App\Models\Webinar::$textLesson) selected @endif>{{ trans('product.text_course') }}</option>
                                                 </select>
-
                                                 @error('type')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>
                                                 @enderror
                                             </div>
-
+                                            @include('admin.webinars.time_content')
                                             <div class="form-group mt-15">
                                                 <label class="input-label">{{ trans('public.title') }}</label>
                                                 <input type="text" name="title" value="{{ !empty($webinar) ? $webinar->title : old('title') }}" class="form-control @error('title')  is-invalid @enderror" placeholder=""/>
@@ -323,7 +355,7 @@
 
                                                 <div class="col-12 col-md-6">
                                                     <div class="form-group">
-                                                        <label class="input-label">{{ trans('public.duration') }} ({{ trans('public.minutes') }})</label>
+                                                        <label class="input-label">{{ trans('public.Course') }} {{ trans('public.duration') }} ({{ trans('public.days') }})</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
                                                                 <span class="input-group-text" id="timeInputGroupPrepend">
@@ -844,7 +876,7 @@
                                 <input type="hidden" name="draft" value="no" id="forDraft"/>
 
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 d-flex">
                                         <button type="button" id="saveAndPublish" class="btn btn-success">{{ !empty($webinar) ? trans('admin/main.save_and_publish') : trans('admin/main.save_and_continue') }}</button>
 
                                         @if(!empty($webinar))
@@ -880,9 +912,33 @@
             </div>
         </div>
     </section>
+    <script>
+        let time_content = document.getElementById('time_content')
+        function courseTypeFunc(select_element){
+            if(select_element.value == 'course'){
+                if(time_content.classList.contains('d-none')){
+                    time_content.classList.remove('d-none')
+                }
+            }else{
+                if(!time_content.classList.contains('d-none')){
+                    time_content.classList.add('d-none')
+                }
+                disableAllWeeklySchedules()
+            }
+        }
+    </script>
 @endsection
 
 @push('scripts_bottom')
+    <script src="{{asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('assets/libs/flatpickr/flatpickr.min.js')}}"></script>
+    <script src="{{asset('assets/libs/spectrum-colorpicker2/spectrum.min.js')}}"></script>
+    <script src="{{asset('assets/libs/clockpicker/bootstrap-clockpicker.min.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+{{--    <!-- Init js-->--}}
+    <script src="{{asset('assets/js/pages/form-pickers.init.js')}}"></script>
+{{--    <!-- App js -->--}}
+    <script src="{{asset('assets/js/time_content.js')}}"></script>
     <script>
         var saveSuccessLang = '{{ trans('webinars.success_store') }}';
         var titleLang = '{{ trans('admin/main.title') }}';
