@@ -111,4 +111,12 @@
   'youtube' => 'Youtube',
   'vimeo' => 'Vimeo',
   'your_reviews_successfully_submitted' => 'Sharhlaringiz muvaffaqiyatli topshirildi',
+    "Monday" =>"Dushanba",
+    "Tuesday" =>"Seshanba",
+    "Wednesday" =>"Chorshanba",
+    "Thursday" =>"Payshanba",
+    "Friday" =>"Juma",
+    "Saturday" =>"Shanba",
+    "Sunday" =>"Yakshanba",
+    'Select time' => 'Vaqtni tanlash',
 );

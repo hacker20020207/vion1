@@ -111,4 +111,10 @@
   'youtube' => 'YouTube',
   'vimeo' => 'Vimeo',
   'your_reviews_successfully_submitted' => 'Ваши отзывы были успешно представлены',
+    "Monday" =>"Понедельник",
+    "Tuesday" =>"Вторник",
+    "Wednesday" =>"Среда",
+    "Thursday" =>"Четверг",
+    "Friday" =>"Пятница",
+    "Saturday" =>"Суббота",
 );

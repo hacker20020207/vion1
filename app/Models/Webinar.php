@@ -96,6 +96,15 @@ class Webinar extends Model implements TranslatableContract
         return $this->hasMany('App\Models\Ticket', 'webinar_id', 'id');
     }
 
+    public function scheduleTemplates()
+    {
+        return $this->hasMany(WebinarScheduleTemplates::class, 'webinar_id', 'id');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(WebinarSchedule::class, 'webinar_id', 'id');
+    }
 
     public function chapters()
     {

@@ -17479,7 +17479,7 @@ p {
 }
 
 .clockpicker-popover {
-  display: block !important;
+  /*display: block !important;*/
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;

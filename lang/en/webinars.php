@@ -140,8 +140,14 @@ return [
     'zoom_jwt_token_invalid' => 'Your Zoom JWT token is invalid.',
 	'youtube' => 'Youtube',
     'vimeo' => 'Vimeo',
-    'show_only_bundles' => 'Show only bundles',
-    'your_reviews_successfully_submitted' => 'Your reviews was successfully submitted'
+    'your_reviews_successfully_submitted' => 'Your reviews was successfully submitted',
+    "Monday" =>"Monday",
+    "Tuesday" =>"Tuesday",
+    "Wednesday" =>"Wednesday",
+    "Thursday" =>"Thursday",
+    "Friday" =>"Friday",
+    "Saturday" =>"Saturday",
+    "Sunday" =>"Sunday",
 
-    
+
 ];

@@ -153,7 +153,6 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         Route::post('/validate', 'CertificateValidationController@checkValidate');
     });
 
-
     Route::group(['prefix' => 'cart'], function () {
         Route::post('/store', 'CartManagerController@store');
         Route::get('/{id}/delete', 'CartManagerController@destroy');

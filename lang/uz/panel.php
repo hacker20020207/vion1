@@ -55,7 +55,7 @@
   'filter_comments' => 'Filtr sharhlari',
   'webinar_comments_list' => 'Kurs Fikrlar ro\'yxati',
   'comments_no_result' => 'Sizda izoh yo\'q!',
-  'comments_no_result_hint' => 'Talaba kurslaringizga sharhlanganda 
+  'comments_no_result_hint' => 'Talaba kurslaringizga sharhlanganda
  Bu ro\'yxatda paydo bo\'ladi.',
   'my_comments_no_result' => 'Siz hech qanday izohlar yaratmadingiz!',
   'my_comments_no_result_hint' => 'Sizning sharhlaringiz hamjamiyat sifatini yaxshilashga yordam beradi ...',
@@ -251,4 +251,6 @@
   'affiliate_url' => 'Sizning sherikingiz url',
   'content_defined' => 'Tarkib aniqlandi',
   'purchased_courses' => 'Xarid qilingan kurslar',
+    'Select day' => 'Kunni tanlang',
+    'Select time' => 'Vaqtni tanlang',
 );

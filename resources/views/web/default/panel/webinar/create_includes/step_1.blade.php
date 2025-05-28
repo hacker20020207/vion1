@@ -4,7 +4,6 @@
 
 <div class="row">
     <div class="col-12 col-md-4 mt-15">
-
         @if(!empty(getGeneralSettings('content_translate')))
             <div class="form-group">
                 <label class="input-label">{{ trans('auth.language') }}</label>
@@ -17,25 +16,20 @@
         @else
             <input type="hidden" name="locale" value="{{ getDefaultLocale() }}">
         @endif
-
-
-        <div class="form-group mt-15 ">
+        <div class="form-group mt-15">
             <label class="input-label d-block">{{ trans('panel.course_type') }}</label>
-
-            <select name="type" class="custom-select @error('type')  is-invalid @enderror">
+            <select name="type" class="custom-select @error('type')  is-invalid @enderror" onchange="courseTypeFunc(this)">
                 <option value="webinar" @if(!empty($webinar) and $webinar->isWebinar()) selected @endif>{{ trans('webinars.webinar') }}</option>
                 <option value="course" @if(!empty($webinar) and $webinar->type == 'course') selected @endif>{{ trans('webinars.video_course') }}</option>
                 <option value="text_lesson" @if(!empty($webinar) and $webinar->type == 'text_lesson') selected @endif>{{ trans('webinars.text_lesson') }}</option>
             </select>
-
             @error('type')
             <div class="invalid-feedback">
                 {{ $message }}
             </div>
             @enderror
         </div>
-
-
+        @include('web.default.panel.webinar.create_includes.time_content')
         @if($isOrganization)
             <div class="form-group mt-15 ">
                 <label class="input-label d-block">{{ trans('public.select_a_teacher') }}</label>
@@ -54,7 +48,6 @@
                 @enderror
             </div>
         @endif
-
 
         <div class="form-group mt-15">
             <label class="input-label">{{ trans('public.title') }}</label>
@@ -115,9 +108,7 @@
 
             <div class="">
                 <label class="input-label font-12">{{ trans('public.source') }}</label>
-                <select name="video_demo_source"
-                        class="js-video-demo-source form-control"
-                >
+                <select name="video_demo_source" class="js-video-demo-source form-control">
                     @foreach(getFeaturesSettings('available_sources') as $source)
                         <option value="{{ $source }}" @if(!empty($webinar) and $webinar->video_demo_source == $source) selected @endif>{{ trans('update.file_source_'.$source) }}</option>
                     @endforeach
@@ -195,7 +186,21 @@
         </div>
     </div>
 @endif
-
+<script>
+    let time_content = document.getElementById('time_content')
+    function courseTypeFunc(select_element){
+        console.log(select_element.value)
+        if(select_element.value == 'course'){
+            if(time_content.classList.contains('d-none')){
+                time_content.classList.remove('d-none')
+            }
+        }else{
+            if(!time_content.classList.contains('d-none')){
+                time_content.classList.add('d-none')
+            }
+        }
+    }
+</script>
 @push('scripts_bottom')
     <script src="/assets/vendors/summernote/summernote-bs4.min.js"></script>
 

@@ -388,4 +388,8 @@ return [
     'lessons' => 'Lessons',
     'create_lesson' => 'Create lesson',
 
+    'Course' => 'Course',
+    'duration' => 'duration',
+    'days' => 'days'
+
 ];

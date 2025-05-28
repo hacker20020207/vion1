@@ -30,3 +30,9 @@ body {
     -ms-user-select: none;     /* IE10+/Edge */
     user-select: none;         /* Standart */
 }
+.width_44{
+    width: 44px;
+}
+.width_64{
+    width: 64px;
+}

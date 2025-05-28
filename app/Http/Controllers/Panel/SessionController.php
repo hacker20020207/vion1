@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Constants;
 use App\Http\Controllers\Controller;
 use App\Models\AgoraHistory;
 use App\Models\ReserveMeeting;
+use App\Models\Sale;
 use App\Models\Session;
+use App\Models\SessionUser;
 use App\Models\Translation\SessionTranslation;
 use App\Models\Webinar;
 use App\Models\WebinarChapterItem;
 use App\Sessions\ZoomOAuth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class SessionController extends Controller
@@ -119,10 +123,20 @@ class SessionController extends Controller
                 $session->save();
             }
 
+            $sale_users_id = Sale::query()->where('webinar_id', 1)->pluck('buyer_id')->toArray();
+            foreach($sale_users_id as $sale_user_id){
+                $session_user[] = [
+                    'webinar_id' => $data['webinar_id'],
+                    'session_id' => $data['session_id'],
+                    'user_id' => $sale_user_id,
+                    'status' => Constants::SESSION_USER_STATUS_PENDING
+                ];
+            }
+            DB::table('session_user')->insert($session_user);
+
             if (!empty($session)) {
                 WebinarChapterItem::makeItem($session->creator_id, $session->chapter_id, $session->id, WebinarChapterItem::$chapterSession);
             }
-
 
             return response()->json([
                 'code' => 200,

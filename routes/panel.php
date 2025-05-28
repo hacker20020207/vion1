@@ -18,8 +18,6 @@ Route::group(['namespace' => 'Panel', 'prefix' => 'panel', 'middleware' => ['imp
         Route::post('/contact-info', 'UserController@contactInfo');
         Route::post('/offlineToggle', 'UserController@offlineToggle');
         Route::get('/{id}/getInfo', 'UserController@getUserInfo');
-
-
         Route::get('/login-history/{session_id}/end-session', 'UserLoginHistoryController@endSession');
     });
 

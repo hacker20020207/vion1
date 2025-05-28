@@ -9,7 +9,6 @@
 
     $('body').on('click', '#webinarDemoVideoBtn', function (e) {
         e.preventDefault();
-
         if (courseDemoVideoPlayer !== undefined) {
             courseDemoVideoPlayer.dispose();
         }

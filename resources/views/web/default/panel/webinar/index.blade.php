@@ -59,7 +59,6 @@
                 </div>
             </form>
         </div>
-
         @if(!empty($webinars) and !$webinars->isEmpty())
             @foreach($webinars as $webinar)
                 @php

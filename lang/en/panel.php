@@ -272,7 +272,7 @@ return [
 
     'more_info' => 'More info',
   	'partner_instructor_hint' => 'The partner instructor will have access to the course content and their profile will be displayed on the course page.',
-  	
+
   	'affiliate' => 'Affiliate',
     'affiliates' => 'Affiliate',
     'affiliates_page' => 'Affiliate Marketing',
@@ -290,4 +290,6 @@ return [
     'affiliate_url' => 'Your Affiliate URL',
 	'content_defined' => 'Content Defined',
   	'purchased_courses' => 'Purchased Courses',
+    'Select day' => 'Select day',
+    'Select time' => 'Select time',
 ];

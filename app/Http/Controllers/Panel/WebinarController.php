@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Constants;
 use App\Exports\WebinarStudents;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Panel\Traits\VideoDemoTrait;
 use App\Mixins\RegistrationPackage\UserPackage;
 use App\Models\BundleWebinar;
 use App\Models\Category;
+use App\Models\DaysOfWeek;
 use App\Models\Faq;
 use App\Models\File;
 use App\Models\Gift;
@@ -23,6 +25,7 @@ use App\Models\Translation\WebinarTranslation;
 use App\Models\WebinarChapter;
 use App\Models\WebinarChapterItem;
 use App\Models\WebinarExtraDescription;
+use App\Models\WebinarScheduleTemplates;
 use App\User;
 use App\Models\Webinar;
 use App\Models\WebinarPartnerTeacher;
@@ -56,10 +59,8 @@ class WebinarController extends Controller
 
         $data = $this->makeMyClassAndInvitationsData($query, $user, $request);
         $data['pageTitle'] = trans('webinars.webinars_list_page_title');
-
         return view(getTemplate() . '.panel.webinar.index', $data);
     }
-
 
     public function invitations(Request $request)
     {
@@ -182,7 +183,6 @@ class WebinarController extends Controller
             'category',
             'teacher'
         ])->orderBy('updated_at', 'desc');
-
         $webinarsCount = $query->count();
 
         $webinars = $query->paginate(10);
@@ -225,7 +225,6 @@ class WebinarController extends Controller
 
             $webinar->sales = $sales;
         }
-
         return [
             'webinars' => $webinars,
             'webinarsCount' => $webinarsCount,
@@ -252,7 +251,7 @@ class WebinarController extends Controller
         return $updatedArray;
     }
 
-    public function create(Request $request)
+    public function create()
     {
         $this->authorize("panel_webinars_create");
 
@@ -301,24 +300,18 @@ class WebinarController extends Controller
     public function store(Request $request)
     {
         $this->authorize("panel_webinars_create");
-
         $user = auth()->user();
-
         if (!$user->isTeacher() and !$user->isOrganization()) {
             abort(404);
         }
-
         $userPackage = new UserPackage();
         $userCoursesCountLimited = $userPackage->checkPackageLimit('courses_count');
-
         if ($userCoursesCountLimited) {
             session()->put('registration_package_limited', $userCoursesCountLimited);
 
             return redirect()->back();
         }
-
         $currentStep = $request->get('current_step', 1);
-
         $rules = [
             'type' => 'required|in:webinar,course,text_lesson',
             'title' => 'required|max:255',
@@ -326,9 +319,7 @@ class WebinarController extends Controller
             'image_cover' => 'required',
             'description' => 'required',
         ];
-
         $this->validate($request, $rules);
-
         $data = $request->all();
         $data = $this->handleVideoDemoData($request, $user->id, $data, "course_demo_" . time());
 
@@ -346,6 +337,51 @@ class WebinarController extends Controller
             'created_at' => time(),
         ]);
 
+        $mondayDate = $request->mondayDate;
+        $monday_confirmed = $request->monday_confirmed;
+        $thuesdayDate = $request->thuesdayDate;
+        $thuesday_confirmed = $request->thuesday_confirmed;
+        $wednesdayDate = $request->wednesdayDate;
+        $wednesday_confirmed = $request->wednesday_confirmed;
+        $thursdayDate = $request->thursdayDate;
+        $thursday_confirmed = $request->thursday_confirmed;
+        $fridayDate = $request->fridayDate;
+        $friday_confirmed = $request->friday_confirmed;
+        $saturdayDate = $request->saturdayDate;
+        $saturday_confirmed = $request->saturday_confirmed;
+        $sundayDate = $request->sundayDate;
+        $sunday_confirmed = $request->sunday_confirmed;
+
+        $daysOfWeek = DaysOfWeek::get();
+        $monday = $daysOfWeek->firstWhere('name', 'Monday');
+        $thuesday = $daysOfWeek->firstWhere('name', 'Thuesday');
+        $wednesday = $daysOfWeek->firstWhere('name', 'Wednesday');
+        $thursday = $daysOfWeek->firstWhere('name', 'Thursday');
+        $friday = $daysOfWeek->firstWhere('name', 'Friday');
+        $saturday = $daysOfWeek->firstWhere('name', 'Saturday');
+        $sunday = $daysOfWeek->firstWhere('name', 'Sunday');
+
+        if($monday_confirmed == 1 && $monday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $monday->id, $mondayDate);
+        }
+        if($thuesday_confirmed == 1 && $thuesday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $thuesday->id, $thuesdayDate);
+        }
+        if($wednesday_confirmed == 1 && $wednesday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $wednesday->id, $wednesdayDate);
+        }
+        if($thursday_confirmed == 1 && $thursday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $thursday->id, $thursdayDate);
+        }
+        if($friday_confirmed == 1 && $friday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $friday->id, $fridayDate);
+        }
+        if($saturday_confirmed == 1 && $saturday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $saturday->id, $saturdayDate);
+        }
+        if($sunday_confirmed == 1 && $sunday){
+            $this->saveNewWebinarScheduleTemplate($webinar->id, $sunday->id, $sundayDate);
+        }
         if ($webinar) {
             WebinarTranslation::updateOrCreate([
                 'webinar_id' => $webinar->id,
@@ -356,8 +392,6 @@ class WebinarController extends Controller
                 'seo_description' => $data['seo_description'],
             ]);
         }
-
-
         $notifyOptions = [
             '[u.name]' => $user->full_name,
             '[item_title]' => $webinar->title,
@@ -371,6 +405,18 @@ class WebinarController extends Controller
         }
 
         return redirect($url);
+    }
+
+    public function saveNewWebinarScheduleTemplate($webinar_id, $week_id, $time){
+        $webinar_schedule_template = WebinarScheduleTemplates::where(['webinar_id'=> $webinar_id, 'day_of_week_id'=>$week_id])->first();
+        if(!$webinar_schedule_template){
+            $webinar_schedule_template = new WebinarScheduleTemplates();
+        }
+        $webinar_schedule_template->webinar_id = $webinar_id;
+        $webinar_schedule_template->day_of_week_id = $week_id;
+        $webinar_schedule_template->status = Constants::WEBINAR_SCHEDULE_TEMPLATE_ACTIVE;
+        $webinar_schedule_template->start_time = $time;
+        $webinar_schedule_template->save();
     }
 
     public function edit(Request $request, $id, $step = 1)
@@ -403,7 +449,6 @@ class WebinarController extends Controller
                     $query->where('creator_id', $user->id)
                         ->orWhere('teacher_id', $user->id);
                 });
-
                 $query->orWhereHas('webinarPartnerTeacher', function ($query) use ($user) {
 
                 });
@@ -425,6 +470,7 @@ class WebinarController extends Controller
                     }]);
                 },
                 'tags',
+                'scheduleTemplates',
             ]);
 
             $categories = Category::where('parent_id', null)
@@ -437,6 +483,7 @@ class WebinarController extends Controller
                 'tickets' => function ($query) {
                     $query->orderBy('order', 'asc');
                 },
+                'scheduleTemplates',
             ]);
         } elseif ($step == 4) {
             $query->with([
@@ -458,6 +505,7 @@ class WebinarController extends Controller
                         }
                     ]);
                 },
+                'scheduleTemplates',
             ]);
         } elseif ($step == 5) {
             $query->with([
@@ -467,7 +515,8 @@ class WebinarController extends Controller
                             $q->select('id', 'full_name');
                         }]);
                     }])->orderBy('order', 'asc');
-                }
+                },
+                'scheduleTemplates',
             ]);
         } elseif ($step == 6) {
             $query->with([
@@ -476,7 +525,8 @@ class WebinarController extends Controller
                 },
                 'webinarExtraDescription' => function ($query) {
                     $query->orderBy('order', 'asc');
-                }
+                },
+                'scheduleTemplates',
             ]);
         } elseif ($step == 7) {
             $query->with([
@@ -484,7 +534,8 @@ class WebinarController extends Controller
                 'chapters' => function ($query) {
                     $query->where('status', WebinarChapter::$chapterActive)
                         ->orderBy('order', 'asc');
-                }
+                },
+                'scheduleTemplates',
             ]);
 
             $teacherQuizzes = Quiz::where('webinar_id', null)
@@ -533,7 +584,6 @@ class WebinarController extends Controller
             $data['sumTicketsCapacities'] = $webinar->tickets->sum('capacity');
         }
 
-
         return view(getTemplate() . '.panel.webinar.create', $data);
     }
 
@@ -569,7 +619,6 @@ class WebinarController extends Controller
         if (empty($webinar)) {
             abort(404);
         }
-
         if ($currentStep == 1) {
             $rules = [
                 'type' => 'required|in:webinar,course,text_lesson',

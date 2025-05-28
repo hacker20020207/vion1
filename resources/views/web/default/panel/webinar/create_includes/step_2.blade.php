@@ -7,7 +7,6 @@
 <div class="row">
     <div class="col-12 col-md-6 mt-15">
 
-
         <div class="form-group mt-15">
             <label class="input-label">{{ trans('public.capacity') }}</label>
             <input type="number" name="capacity" value="{{ (!empty($webinar) and !empty($webinar->capacity)) ? $webinar->capacity : old('capacity') }}" class="form-control @error('capacity')  is-invalid @enderror" placeholder="{{ trans('forms.capacity_placeholder') }}"/>
@@ -27,9 +26,9 @@
                         <label class="input-label">{{ trans('public.start_date') }}</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                            <span class="input-group-text" id="dateInputGroupPrepend">
-                                <i data-feather="calendar" width="18" height="18" class="text-white"></i>
-                            </span>
+                                <span class="input-group-text" id="dateInputGroupPrepend">
+                                    <i data-feather="calendar" width="18" height="18" class="text-white"></i>
+                                </span>
                             </div>
                             <input type="text" name="start_date" value="{{ (!empty($webinar) and $webinar->start_date) ? dateTimeFormat($webinar->start_date, 'Y-m-d H:i', false, false, $webinar->timezone) : old('start_date') }}"
                                    class="form-control @error('start_date')  is-invalid @enderror datetimepicker" aria-describedby="dateInputGroupPrepend"/>
@@ -45,7 +44,7 @@
 
             <div class="col-12 @if($webinar->isWebinar()) col-md-6 @endif">
                 <div class="form-group">
-                    <label class="input-label">{{ trans('public.duration') }} ({{ trans('public.minutes') }})</label>
+                    <label class="input-label">{{ trans('public.Course') }} {{ trans('public.duration') }} ({{ trans('public.days') }})</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="timeInputGroupPrepend">
@@ -53,12 +52,11 @@
                             </span>
                         </div>
 
-
                         <input type="text" name="duration" value="{{ (!empty($webinar) and !empty($webinar->duration)) ? $webinar->duration : old('duration') }}" class="form-control @error('duration')  is-invalid @enderror"/>
                         @error('duration')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
                 </div>

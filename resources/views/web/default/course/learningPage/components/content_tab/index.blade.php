@@ -34,7 +34,6 @@
                 @include('web.default.course.learningPage.components.content_tab.content',['item' => $file, 'type' => \App\Models\WebinarChapter::$chapterFile])
             @endforeach
         @endif
-
         @if(!empty($course->chapters) and count($course->chapters))
             @include('web.default.course.learningPage.components.content_tab.chapter')
         @endif
