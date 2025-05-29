@@ -42,7 +42,6 @@
 
 @section('content')
     <div class="">
-
         <form method="post" action="/panel/webinars/{{ !empty($webinar) ? $webinar->id .'/update' : 'store' }}" id="webinarForm" class="webinar-form" enctype="multipart/form-data">
             @include('web.default.panel.webinar.create_includes.progress')
 
@@ -60,8 +59,6 @@
             @endif
 
         </form>
-
-
         <div class="create-webinar-footer d-flex flex-column flex-md-row align-items-center justify-content-between mt-20 pt-15 border-top">
             <div class="d-flex align-items-center">
 

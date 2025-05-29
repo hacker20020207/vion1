@@ -922,7 +922,6 @@
                 if(!time_content.classList.contains('d-none')){
                     time_content.classList.add('d-none')
                 }
-                disableAllWeeklySchedules()
             }
         }
     </script>

@@ -189,7 +189,6 @@
 <script>
     let time_content = document.getElementById('time_content')
     function courseTypeFunc(select_element){
-        console.log(select_element.value)
         if(select_element.value == 'course'){
             if(time_content.classList.contains('d-none')){
                 time_content.classList.remove('d-none')

@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Constants;
 use App\Exports\WebinarStudents;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Panel\Traits\VideoDemoTrait;
 use App\Mixins\RegistrationPackage\UserPackage;
 use App\Models\BundleWebinar;
 use App\Models\Category;
-use App\Models\DaysOfWeek;
 use App\Models\Faq;
 use App\Models\File;
 use App\Models\Gift;
@@ -25,7 +23,7 @@ use App\Models\Translation\WebinarTranslation;
 use App\Models\WebinarChapter;
 use App\Models\WebinarChapterItem;
 use App\Models\WebinarExtraDescription;
-use App\Models\WebinarScheduleTemplates;
+use App\Services\WebinarService;
 use App\User;
 use App\Models\Webinar;
 use App\Models\WebinarPartnerTeacher;
@@ -297,7 +295,7 @@ class WebinarController extends Controller
         return view(getTemplate() . '.panel.webinar.create', $data);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, WebinarService $webinarService)
     {
         $this->authorize("panel_webinars_create");
         $user = auth()->user();
@@ -308,7 +306,6 @@ class WebinarController extends Controller
         $userCoursesCountLimited = $userPackage->checkPackageLimit('courses_count');
         if ($userCoursesCountLimited) {
             session()->put('registration_package_limited', $userCoursesCountLimited);
-
             return redirect()->back();
         }
         $currentStep = $request->get('current_step', 1);
@@ -337,51 +334,8 @@ class WebinarController extends Controller
             'created_at' => time(),
         ]);
 
-        $mondayDate = $request->mondayDate;
-        $monday_confirmed = $request->monday_confirmed;
-        $thuesdayDate = $request->thuesdayDate;
-        $thuesday_confirmed = $request->thuesday_confirmed;
-        $wednesdayDate = $request->wednesdayDate;
-        $wednesday_confirmed = $request->wednesday_confirmed;
-        $thursdayDate = $request->thursdayDate;
-        $thursday_confirmed = $request->thursday_confirmed;
-        $fridayDate = $request->fridayDate;
-        $friday_confirmed = $request->friday_confirmed;
-        $saturdayDate = $request->saturdayDate;
-        $saturday_confirmed = $request->saturday_confirmed;
-        $sundayDate = $request->sundayDate;
-        $sunday_confirmed = $request->sunday_confirmed;
+        $webinarService->setWebinarScheduleTemplate($webinar, $request, 'store');
 
-        $daysOfWeek = DaysOfWeek::get();
-        $monday = $daysOfWeek->firstWhere('name', 'Monday');
-        $thuesday = $daysOfWeek->firstWhere('name', 'Thuesday');
-        $wednesday = $daysOfWeek->firstWhere('name', 'Wednesday');
-        $thursday = $daysOfWeek->firstWhere('name', 'Thursday');
-        $friday = $daysOfWeek->firstWhere('name', 'Friday');
-        $saturday = $daysOfWeek->firstWhere('name', 'Saturday');
-        $sunday = $daysOfWeek->firstWhere('name', 'Sunday');
-
-        if($monday_confirmed == 1 && $monday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $monday->id, $mondayDate);
-        }
-        if($thuesday_confirmed == 1 && $thuesday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $thuesday->id, $thuesdayDate);
-        }
-        if($wednesday_confirmed == 1 && $wednesday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $wednesday->id, $wednesdayDate);
-        }
-        if($thursday_confirmed == 1 && $thursday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $thursday->id, $thursdayDate);
-        }
-        if($friday_confirmed == 1 && $friday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $friday->id, $fridayDate);
-        }
-        if($saturday_confirmed == 1 && $saturday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $saturday->id, $saturdayDate);
-        }
-        if($sunday_confirmed == 1 && $sunday){
-            $this->saveNewWebinarScheduleTemplate($webinar->id, $sunday->id, $sundayDate);
-        }
         if ($webinar) {
             WebinarTranslation::updateOrCreate([
                 'webinar_id' => $webinar->id,
@@ -405,18 +359,6 @@ class WebinarController extends Controller
         }
 
         return redirect($url);
-    }
-
-    public function saveNewWebinarScheduleTemplate($webinar_id, $week_id, $time){
-        $webinar_schedule_template = WebinarScheduleTemplates::where(['webinar_id'=> $webinar_id, 'day_of_week_id'=>$week_id])->first();
-        if(!$webinar_schedule_template){
-            $webinar_schedule_template = new WebinarScheduleTemplates();
-        }
-        $webinar_schedule_template->webinar_id = $webinar_id;
-        $webinar_schedule_template->day_of_week_id = $week_id;
-        $webinar_schedule_template->status = Constants::WEBINAR_SCHEDULE_TEMPLATE_ACTIVE;
-        $webinar_schedule_template->start_time = $time;
-        $webinar_schedule_template->save();
     }
 
     public function edit(Request $request, $id, $step = 1)
@@ -471,6 +413,7 @@ class WebinarController extends Controller
                 },
                 'tags',
                 'scheduleTemplates',
+                'scheduleTemplates.daysOfWeek',
             ]);
 
             $categories = Category::where('parent_id', null)
@@ -484,6 +427,7 @@ class WebinarController extends Controller
                     $query->orderBy('order', 'asc');
                 },
                 'scheduleTemplates',
+                'scheduleTemplates.daysOfWeek',
             ]);
         } elseif ($step == 4) {
             $query->with([
@@ -506,6 +450,7 @@ class WebinarController extends Controller
                     ]);
                 },
                 'scheduleTemplates',
+                'scheduleTemplates.daysOfWeek',
             ]);
         } elseif ($step == 5) {
             $query->with([
@@ -517,6 +462,7 @@ class WebinarController extends Controller
                     }])->orderBy('order', 'asc');
                 },
                 'scheduleTemplates',
+                'scheduleTemplates.daysOfWeek',
             ]);
         } elseif ($step == 6) {
             $query->with([
@@ -527,6 +473,7 @@ class WebinarController extends Controller
                     $query->orderBy('order', 'asc');
                 },
                 'scheduleTemplates',
+                'scheduleTemplates.daysOfWeek',
             ]);
         } elseif ($step == 7) {
             $query->with([
@@ -536,6 +483,7 @@ class WebinarController extends Controller
                         ->orderBy('order', 'asc');
                 },
                 'scheduleTemplates',
+                'scheduleTemplates.daysOfWeek',
             ]);
 
             $teacherQuizzes = Quiz::where('webinar_id', null)
@@ -587,7 +535,7 @@ class WebinarController extends Controller
         return view(getTemplate() . '.panel.webinar.create', $data);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, WebinarService $webinarService)
     {
         $this->authorize("panel_webinars_create");
 
@@ -743,7 +691,6 @@ class WebinarController extends Controller
 
         if (!empty($request->get('partner_instructor')) and !empty($request->get('partners'))) {
             WebinarPartnerTeacher::where('webinar_id', $webinar->id)->delete();
-
             foreach ($request->get('partners') as $partnerId) {
                 WebinarPartnerTeacher::create([
                     'webinar_id' => $webinar->id,
@@ -779,8 +726,9 @@ class WebinarController extends Controller
         if (empty($data['teacher_id']) and $user->isOrganization() and $webinar->creator_id == $user->id) {
             $data['teacher_id'] = $user->id;
         }
-
         $webinar->update($data);
+
+        $webinarService->setWebinarScheduleTemplate($webinar, $request, 'update');
 
         $stepCount = empty(getGeneralOptionsSettings('direct_publication_of_courses')) ? 8 : 7;
 
