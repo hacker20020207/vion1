@@ -34,7 +34,6 @@ class WebinarService{
         $saturday_confirmed = $request->saturday_confirmed;
         $sundayDate = $request->sundayDate;
         $sunday_confirmed = $request->sunday_confirmed;
-
         $daysOfWeek = DaysOfWeek::get();
         $monday = $daysOfWeek->firstWhere('name', 'Monday');
         $thuesday = $daysOfWeek->firstWhere('name', 'Thuesday');

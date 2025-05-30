@@ -179,7 +179,9 @@ class WebinarController extends Controller
                 $query->where('status', 'active');
             },
             'category',
-            'teacher'
+            'teacher',
+            'scheduleTemplates',
+            'scheduleTemplates.daysOfWeek'
         ])->orderBy('updated_at', 'desc');
         $webinarsCount = $query->count();
 
@@ -223,6 +225,7 @@ class WebinarController extends Controller
 
             $webinar->sales = $sales;
         }
+
         return [
             'webinars' => $webinars,
             'webinarsCount' => $webinarsCount,
@@ -1135,6 +1138,8 @@ class WebinarController extends Controller
                         'teacher' => function ($query) {
                             $query->select('id', 'full_name');
                         },
+                        'scheduleTemplates',
+                        'scheduleTemplates.daysOfWeek',
                     ]);
                     $query->withCount([
                         'sales' => function ($query) {

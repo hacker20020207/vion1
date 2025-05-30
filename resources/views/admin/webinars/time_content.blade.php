@@ -17,7 +17,7 @@
                     case 'Monday':
                         $monday_date = $start_time;
                         break;
-                    case 'Tuesday':
+                    case 'Thuesday':
                         $thuesday_date = $start_time;
                         break;
                     case 'Wednesday':
@@ -40,7 +40,7 @@
         }
     }
 @endphp
-<div id="time_content" class="@if(empty($webinar)) d-none @endif">
+<div id="time_content" class="@if(!((!empty($webinar) and $webinar->isCourse()) or old('type') == \App\Models\Webinar::$course)) d-none @endif">
     <div id="monday_content" class="@if(!$monday_date) opacity_content @endif">
         <div class="form-group mt-15">
             <input class="form-control" type="text" value="{{ trans('webinars.Monday') }}" readonly>
@@ -50,7 +50,7 @@
             <div class="d-flex">
                 <div>
                     <div class="input-group clockpicker">
-                        <input type="text" class="form-control" disabled name="mondayDate" id="mondayDate" value="{{ $monday_date?$monday_date:'09:30' }}">
+                        <input type="text" class="form-control" @if(!$monday_date) disabled @endif name="mondayDate" id="mondayDate" value="{{ $monday_date?$monday_date:'09:30' }}">
                         <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
             <div class="d-flex">
                 <div>
                     <div class="input-group clockpicker">
-                        <input type="text" class="form-control" disabled name="thuesdayDate" id="thuesdayDate" value="{{ $thuesday_date?$thuesday_date:'09:30' }}">
+                        <input type="text" class="form-control"  @if(!$thuesday_date) disabled @endif name="thuesdayDate" id="thuesdayDate" value="{{ $thuesday_date?$thuesday_date:'09:30' }}">
                         <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
             <div class="d-flex">
                 <div>
                     <div class="input-group clockpicker">
-                        <input type="text" class="form-control" disabled name="wednesdayDate" id="wednesdayDate" value="{{ $wednesday_date?$wednesday_date:'09:30' }}">
+                        <input type="text" class="form-control"  @if(!$wednesday_date) disabled @endif name="wednesdayDate" id="wednesdayDate" value="{{ $wednesday_date?$wednesday_date:'09:30' }}">
                         <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
             <div class="d-flex">
                 <div>
                     <div class="input-group clockpicker">
-                        <input type="text" class="form-control" disabled name="thursdayDate" id="thursdayDate" value="{{ $thursday_date?$thursday_date:'09:30' }}">
+                        <input type="text" class="form-control"  @if(!$thursday_date) disabled @endif name="thursdayDate" id="thursdayDate" value="{{ $thursday_date?$thursday_date:'09:30' }}">
                         <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
             <div class="d-flex">
                 <div>
                     <div class="input-group clockpicker">
-                        <input type="text" class="form-control" disabled name="fridayDate" id="fridayDate" value="{{ $friday_date?$friday_date:'09:30' }}">
+                        <input type="text" class="form-control"  @if(!$friday_date) disabled @endif name="fridayDate" id="fridayDate" value="{{ $friday_date?$friday_date:'09:30' }}">
                         <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                     </div>
                 </div>
@@ -175,7 +175,7 @@
             <div class="d-flex">
                 <div>
                     <div class="input-group clockpicker">
-                        <input type="text" class="form-control" disabled name="saturdayDate" id="saturdayDate" value="{{ $saturday_date?$saturday_date:'09:30' }}">
+                        <input type="text" class="form-control"  @if(!$saturday_date) disabled @endif name="saturdayDate" id="saturdayDate" value="{{ $saturday_date?$saturday_date:'09:30' }}">
                         <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
         <div class="d-flex">
             <div>
                 <div class="input-group clockpicker">
-                    <input type="text" class="form-control" disabled name="sundayDate" id="sundayDate" value="{{ $sunday_date?$sunday_date:'09:30' }}">
+                    <input type="text" class="form-control"  @if(!$sunday_date) disabled @endif name="sundayDate" id="sundayDate" value="{{ $sunday_date?$sunday_date:'09:30' }}">
                     <span class="input-group-text"><i class="mdi mdi-clock-outline"></i></span>
                 </div>
             </div>

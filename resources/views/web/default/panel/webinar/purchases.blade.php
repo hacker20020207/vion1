@@ -184,11 +184,17 @@
                                             <span class="real">{{ trans('public.free') }}</span>
                                         @endif
                                     </div>
-
                                     <div class="d-flex align-items-center justify-content-between flex-wrap mt-auto">
-
+                                        @foreach($item->scheduleTemplates as $scheduleTemplate)
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
+                                                <span class="stat-title">{{ optional($scheduleTemplate->daysOfWeek)->name??'' }}</span>
+                                                <span class="stat-value">{{ $scheduleTemplate->start_time??'' }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap mt-auto">
                                         @if(!empty($sale->gift_id) and $sale->buyer_id == $authUser->id)
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('update.gift_status') }}:</span>
 
                                                 @if(!empty($sale->gift_date) and $sale->gift_date > time())
@@ -198,19 +204,19 @@
                                                 @endif
                                             </div>
                                         @else
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('public.item_id') }}:</span>
                                                 <span class="stat-value">{{ $item->id }}</span>
                                             </div>
                                         @endif
 
                                         @if(!empty($sale->gift_id))
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('update.gift_receive_date') }}:</span>
                                                 <span class="stat-value">{{ (!empty($sale->gift_date)) ? dateTimeFormat($sale->gift_date, 'j M Y H:i') : trans('update.instantly') }}</span>
                                             </div>
                                         @else
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('public.category') }}:</span>
                                                 <span class="stat-value">{{ !empty($item->category_id) ? $item->category->title : '' }}</span>
                                             </div>
@@ -218,52 +224,52 @@
 
                                         @if(!empty($sale->webinar) and $item->type == 'webinar')
                                             @if($item->isProgressing() and !empty($nextSession))
-                                                <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                                <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                     <span class="stat-title">{{ trans('webinars.next_session_duration') }}:</span>
                                                     <span class="stat-value">{{ convertMinutesToHourAndMinute($nextSession->duration) }} Hrs</span>
                                                 </div>
 
-                                                <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                                <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                     <span class="stat-title">{{ trans('webinars.next_session_start_date') }}:</span>
                                                     <span class="stat-value">{{ dateTimeFormat($nextSession->date,'j M Y') }}</span>
                                                 </div>
                                             @else
-                                                <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                                <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                     <span class="stat-title">{{ trans('public.duration') }}:</span>
                                                     <span class="stat-value">{{ convertMinutesToHourAndMinute($item->duration) }} Hrs</span>
                                                 </div>
 
-                                                <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                                <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                     <span class="stat-title">{{ trans('public.start_date') }}:</span>
                                                     <span class="stat-value">{{ dateTimeFormat($item->start_date,'j M Y') }}</span>
                                                 </div>
                                             @endif
                                         @elseif(!empty($sale->bundle))
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('public.duration') }}:</span>
                                                 <span class="stat-value">{{ convertMinutesToHourAndMinute($item->getBundleDuration()) }} Hrs</span>
                                             </div>
                                         @endif
 
                                         @if(!empty($sale->gift_id) and $sale->buyer_id == $authUser->id)
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('update.receipt') }}:</span>
                                                 <span class="stat-value">{{ $sale->gift_recipient }}</span>
                                             </div>
                                         @else
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('public.instructor') }}:</span>
                                                 <span class="stat-value">{{ $item->teacher->full_name }}</span>
                                             </div>
                                         @endif
 
                                         @if(!empty($sale->gift_id) and $sale->buyer_id != $authUser->id)
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('update.gift_sender') }}:</span>
                                                 <span class="stat-value">{{ $sale->gift_sender }}</span>
                                             </div>
                                         @else
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('panel.purchase_date') }}:</span>
                                                 <span class="stat-value">{{ dateTimeFormat($sale->created_at,'j M Y') }}</span>
                                             </div>

@@ -188,7 +188,7 @@
 
                                 @include(getTemplate() . '.includes.webinar.rate',['rate' => $webinar->getRate()])
 
-                                <div class="webinar-price-box mt-15">
+                                <div class="webinar-price-box mt-10">
                                     @if($webinar->price > 0)
                                         @if($webinar->bestTicket() < $webinar->price)
                                             <span class="real">{{ handlePrice($webinar->bestTicket(), true, true, false, null, true) }}</span>
@@ -200,38 +200,45 @@
                                         <span class="real">{{ trans('public.free') }}</span>
                                     @endif
                                 </div>
-
                                 <div class="d-flex align-items-center justify-content-between flex-wrap mt-auto">
-                                    <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                    @foreach($webinar->scheduleTemplates as $scheduleTemplate)
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
+                                            <span class="stat-title">{{ optional($scheduleTemplate->daysOfWeek)->name??'' }}</span>
+                                            <span class="stat-value">{{ $scheduleTemplate->start_time??'' }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between flex-wrap mt-auto">
+                                    <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                         <span class="stat-title">{{ trans('public.item_id') }}:</span>
                                         <span class="stat-value">{{ $webinar->id }}</span>
                                     </div>
 
-                                    <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                    <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                         <span class="stat-title">{{ trans('public.category') }}:</span>
                                         <span class="stat-value">{{ !empty($webinar->category_id) ? $webinar->category->title : '' }}</span>
                                     </div>
 
                                     @if($webinar->isProgressing() and !empty($nextSession))
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('webinars.next_session_duration') }}:</span>
                                             <span class="stat-value">{{ convertMinutesToHourAndMinute($nextSession->duration) }} Hrs</span>
                                         </div>
 
                                         @if($webinar->isWebinar())
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('webinars.next_session_start_date') }}:</span>
                                                 <span class="stat-value">{{ dateTimeFormat($nextSession->date,'j M Y') }}</span>
                                             </div>
                                         @endif
                                     @else
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('public.duration') }}:</span>
                                             <span class="stat-value">{{ convertMinutesToHourAndMinute($webinar->duration) }} Hrs</span>
                                         </div>
 
                                         @if($webinar->isWebinar())
-                                            <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                            <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                                 <span class="stat-title">{{ trans('public.start_date') }}:</span>
                                                 <span class="stat-value">{{ dateTimeFormat($webinar->start_date,'j M Y') }}</span>
                                             </div>
@@ -239,43 +246,43 @@
                                     @endif
 
                                     @if($webinar->isTextCourse() or $webinar->isCourse())
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('public.files') }}:</span>
                                             <span class="stat-value">{{ $webinar->files->count() }}</span>
                                         </div>
                                     @endif
 
                                     @if($webinar->isTextCourse())
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('webinars.text_lessons') }}:</span>
                                             <span class="stat-value">{{ $webinar->textLessons->count() }}</span>
                                         </div>
                                     @endif
 
                                     @if($webinar->isCourse())
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('home.downloadable') }}:</span>
                                             <span class="stat-value">{{ ($webinar->downloadable) ? trans('public.yes') : trans('public.no') }}</span>
                                         </div>
                                     @endif
 
-                                    <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                    <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                         <span class="stat-title">{{ trans('panel.sales') }}:</span>
                                         <span class="stat-value">{{ count($webinar->sales) }} ({{ (!empty($webinar->sales) and count($webinar->sales)) ? handlePrice($webinar->sales->sum('amount')) : 0 }})</span>
                                     </div>
 
                                     @if(!empty($webinar->partner_instructor) and $webinar->partner_instructor and $authUser->id != $webinar->teacher_id and $authUser->id != $webinar->creator_id)
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('panel.invited_by') }}:</span>
                                             <span class="stat-value">{{ $webinar->teacher->full_name }}</span>
                                         </div>
                                     @elseif($authUser->id != $webinar->teacher_id and $authUser->id != $webinar->creator_id)
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('webinars.teacher_name') }}:</span>
                                             <span class="stat-value">{{ $webinar->teacher->full_name }}</span>
                                         </div>
                                     @elseif($authUser->id == $webinar->teacher_id and $authUser->id != $webinar->creator_id and $webinar->creator->isOrganization())
-                                        <div class="d-flex align-items-start flex-column mt-20 mr-15">
+                                        <div class="d-flex align-items-start flex-column mt-10 mr-15">
                                             <span class="stat-title">{{ trans('webinars.organization_name') }}:</span>
                                             <span class="stat-value">{{ $webinar->creator->full_name }}</span>
                                         </div>

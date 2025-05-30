@@ -2317,7 +2317,6 @@ function isAdminUrl($url = null)
 function getTranslateAttributeValue($model, $key, $loca = null)
 {
     $isAdminUrl = isAdminUrl();
-
     $locale = app()->getLocale();
     $contentLocale = $isAdminUrl ? getContentLocale() : null; // for admin edit contents
 
@@ -2339,26 +2338,20 @@ function getTranslateAttributeValue($model, $key, $loca = null)
 
     try {
         $locale = !empty($loca) ? $loca : $locale;
-
         if ($model->getTable() === 'settings' and in_array($model->name, \App\Models\Setting::getSettingsWithDefaultLocal())) {
             $locale = \App\Models\Setting::$defaultSettingsLocale;
         }
-
         $model->locale = $locale;
-
         return $model->translate(mb_strtolower($locale))->{$key};
     } catch (\Exception $e) {
         // this conditions get client side
-
         if (empty($contentLocale) and empty($loca)) { //  first get translate by site default language
             $defaultLocale = getDefaultLocale();
-
             return getTranslateAttributeValue($model, $key, $defaultLocale);
         } elseif ((!empty($loca) or !$isEditModel) and $loca != 'en' and !empty($model->translations) and count($model->translations)) { // if not translate by site default language get translate by English language
             return getTranslateAttributeValue($model, $key, 'en');
         } else if ((!empty($loca) or !$isEditModel) and !empty($model->translations) and count($model->translations)) { // if not default and English get translate by first locale
             $translations = $model->translations->first();
-
             return getTranslateAttributeValue($model, $key, $translations->locale);
         }
 
@@ -2441,13 +2434,13 @@ function curformat($amount)
     // (A3) RESULT
     return "\$$whole.$decimal";
 }
-function get_on_new_st($x) 
+function get_on_new_st($x)
 {
-    return substr(strval($x), 0, -3)."\n".substr(strval($x), -3); 
+    return substr(strval($x), 0, -3)."\n".substr(strval($x), -3);
 }
-function get_split_st($x) 
+function get_split_st($x)
 {
-    return substr(strval($x), 0, -3)." ".substr(strval($x), -3); 
+    return substr(strval($x), 0, -3)." ".substr(strval($x), -3);
 }
 
 function handlePriceFormat($price, $decimals = 0, $decimal_separator = '.', $thousands_separator = '')

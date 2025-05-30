@@ -473,18 +473,6 @@ class WebinarController extends Controller
         return redirect(getAdminPanelUrl() . '/webinars/' . $webinar->id . '/edit?locale=' . $data['locale']);
     }
 
-    public function saveNewWebinarScheduleTemplate($webinar_id, $week_id, $time){
-        $webinar_schedule_template = WebinarScheduleTemplates::where(['webinar_id'=> $webinar_id, 'day_of_week_id'=>$week_id])->first();
-        if(!$webinar_schedule_template){
-            $webinar_schedule_template = new WebinarScheduleTemplates();
-        }
-        $webinar_schedule_template->webinar_id = $webinar_id;
-        $webinar_schedule_template->day_of_week_id = $week_id;
-        $webinar_schedule_template->status = Constants::WEBINAR_SCHEDULE_TEMPLATE_ACTIVE;
-        $webinar_schedule_template->start_time = $time;
-        $webinar_schedule_template->save();
-    }
-
     public function edit(Request $request, $id)
     {
         $this->authorize('admin_webinars_edit');
@@ -522,7 +510,6 @@ class WebinarController extends Controller
                     $query->with([
                         'chapterItems' => function ($query) {
                             $query->orderBy('order', 'asc');
-
                             $query->with([
                                 'quiz' => function ($query) {
                                     $query->with([
@@ -537,7 +524,6 @@ class WebinarController extends Controller
                 },
             ])
             ->first();
-
         if (empty($webinar)) {
             abort(404);
         }
@@ -584,7 +570,7 @@ class WebinarController extends Controller
         $this->authorize('admin_webinars_edit');
         $data = $request->all();
 
-        $webinar = Webinar::with('scheduleTemplates')->find($id);
+        $webinar = Webinar::find($id);
         $isDraft = (!empty($data['draft']) and $data['draft'] == 1);
         $reject = (!empty($data['draft']) and $data['draft'] == 'reject');
         $publish = (!empty($data['draft']) and $data['draft'] == 'publish');
@@ -796,7 +782,6 @@ class WebinarController extends Controller
         }
 
         removeContentLocale();
-
         return back();
     }
 
