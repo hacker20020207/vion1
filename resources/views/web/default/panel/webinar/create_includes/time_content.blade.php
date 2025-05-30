@@ -40,7 +40,7 @@
         }
     }
 @endphp
-<div id="time_content" class="@if(!((!empty($webinar) and $webinar->isCourse()) and old('type') == \App\Models\Webinar::$course)) d-none @endif">>
+<div id="time_content" class="@if(!((!empty($webinar) and $webinar->isCourse()) or old('type') == \App\Models\Webinar::$course)) d-none @endif">>
     <div id="monday_content" class="@if(!$monday_date) opacity_content @endif">
         <div class="form-group mt-15">
             <input class="form-control" type="text" value="{{ trans('webinars.Monday') }}" readonly>
