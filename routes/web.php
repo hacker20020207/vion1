@@ -105,7 +105,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         Route::get('/{slug}/file/{file_id}/showHtml', 'WebinarController@showHtmlFile');
         Route::get('/{slug}/lessons/{lesson_id}/read', 'WebinarController@getLesson');
         Route::post('/getFilePath', 'WebinarController@getFilePath');
-        Route::get('/{slug}/file/{file_id}/play', 'WebinarController@playFile');
+        Route::get('/{slug}/file/{file_id}/play', 'WebinarController@playFile')->middleware('file');
         Route::get('/{slug}/free', 'WebinarController@free');
         Route::get('/{slug}/points/apply', 'WebinarController@buyWithPoint');
         Route::post('/{id}/report', 'WebinarController@reportWebinar');
